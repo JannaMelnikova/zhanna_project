@@ -1,0 +1,23 @@
+- apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- apt:
+    update_cache: yes
+    force: yes
+
+- apt:
+    name:
+      - docker-ce
+    state: present
+    install_recommends: yes
+
+- name: Add user to docker group
+  user:
+    name: '{{ USER }}'
+    groups: docker
+    append: yes

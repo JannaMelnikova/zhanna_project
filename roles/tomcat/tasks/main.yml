@@ -1,0 +1,17 @@
+- name: Copy docker-compose.yml
+  copy:
+    src: ./roles/tomcat/template/docker-compose.yml
+    dest: /tmp/docker-compose.yml
+
+- name: Copy tomcat-users.xml
+  copy:
+    src: roles/tomcat/template/tomcat-users.xml
+    dest: /opt/tomcat-users.xml
+
+- name: Start container
+  command: /usr/local/bin/docker-compose -f /tmp/docker-compose.yml up -d --build
+
+#- name: Copy tomcat-users.xml in container
+#  command: docker cp /opt/tomcat-users.xml tomcat:/opt/bitnami/tomcat/conf/tomcat-users.xml
+#  notify:
+#    - Tomcat reload

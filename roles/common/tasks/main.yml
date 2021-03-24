@@ -1,0 +1,58 @@
+- lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Update APT
+  apt:
+    update_cache: yes
+
+- name: Install python3-apt
+  package:
+    name: python3-apt
+    state: latest
+
+- name: Install python3-pip
+  package:
+    name: python3-pip
+    state: latest
+
+- name: GPG Docker Key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Install apt-transport-https
+  apt:
+   pkg:
+    - apt-transport-https
+    - python3-docker
+    - python-docker
+
+- name: Install apt-transport-https
+  apt:
+   pkg:
+    - awscli
+    - python-contextlib2
+    - python3-contextlib2
+  tags:
+    - web
+
+- apt_repository:     
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    state: present
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+
+- name: Upgrade all packages
+  apt:
+    upgrade: dist
+
+- name: Run apt update
+  apt:
+    update_cache: yes

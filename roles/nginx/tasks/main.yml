@@ -1,0 +1,18 @@
+---
+- name: Copy docker-compose.yml
+  copy:
+    src: ./roles/nginx/files/docker-compose.yml
+    dest: /tmp/docker-compose.yml
+
+- name: Copy nginx.conf
+  copy:
+    src: ./roles/nginx/templates/nginx.conf
+    dest: /opt/nginx.conf
+
+- name: Start container
+  command: /usr/local/bin/docker-compose -f /tmp/docker-compose.yml up -d --build
+
+- name: Copy nginx.conf in container
+  command: docker cp /opt/nginx.conf nginx:/etc/nginx/nginx.conf
+  notify:
+    - Nginx reload

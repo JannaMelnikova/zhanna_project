@@ -1,0 +1,10 @@
+version: "2"
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - "80:80"
+      - "81:8080"
+    volumes:
+      - /mnt:/etc/nginx/conf.d

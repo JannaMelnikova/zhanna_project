@@ -1,0 +1,11 @@
+version: '2'
+services:
+  tomcat:
+    container_name: tomcat
+    image: bitnami/tomcat:latest
+    restart: on-failure:3
+    environment:
+      - TOMCAT_USERNAME=tomcat
+      - TOMCAT_PASSWORD=tomcat
+    ports:
+      - 8100:8080

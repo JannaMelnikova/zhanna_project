@@ -1,0 +1,29 @@
+---
+#- import_playbook: set_sudoer.yml
+
+- hosts: all
+  remote_user: "{{ USER }}"
+  become: yes
+  become_method: sudo
+  roles:
+  - { role: common, tags: [ 'web, app' ] }
+  - { role: docker, tags: [ 'web, app' ] }
+  - { role: docker-compose, tags: [ 'web, app' ] }
+  tags: ['all']
+
+- hosts: web
+  remote_user: "{{ USER }}"
+  become: yes
+  become_method: sudo
+  roles:
+  - { role: nginx, tags: [ 'web' ] }
+  tags: ['web']
+
+- hosts: app
+  remote_user: "{{ USER }}"
+  become: yes
+  become_method: sudo
+  roles:
+  - { role: tomcat, tags: [ 'app' ] }
+#  - { role: jenkins, tags: [ 'app' ] }
+  tags: ['app']

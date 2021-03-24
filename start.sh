@@ -18,11 +18,11 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	cat /dev/zero | ssh-keygen -t rsa -b 4096 -q -N ""
 fi
 
-if grep "\[core\]" $INVENT/hosts; then
-        echo -e "\n\033[33m Host CORE present in file hosts \033[0m \n";
-else
-	echo -e "[core]\ncore ansible_ssh_host=$CORE_IP\n\n$(cat $INVENT/hosts)" > $INVENT/hosts;
-fi
+#if grep "\[core\]" $INVENT/hosts; then
+#        echo -e "\n\033[33m Host CORE present in file hosts \033[0m \n";
+#else
+#	echo -e "[core]\ncore ansible_ssh_host=$CORE_IP\n\n$(cat $INVENT/hosts)" > $INVENT/hosts;
+#fi
 
 echo -e ""
 sed '/^$/d' $INVENT/hosts > tmp_ip
@@ -36,12 +36,15 @@ sshpass -p $password ssh-copy-id -o "StrictHostKeyChecking no" $USER@$CORE_IP
 for LINE in $(cat tmp_ip)
 do
         sshpass -p $password ssh-copy-id -o "StrictHostKeyChecking no" $USER@$LINE;
-        sshpass -p $password ssh $USER@$LINE "echo $password | sudo -S apt -y update && echo $password | sudo -S apt -y install python python-pip curl wget git";
+        sshpass -p $password ssh $USER@$LINE "echo $password | sudo -S apt -y update && echo $password | sudo -S apt -y install python python-pip curl wget git && echo $password | sudo -S sudo usermod -a -G sudo $USER";
 done
 
 ansible -i $INVENT -m ping all
-
-
 rm tmp_ip
+
+ansible-playbook set_sudoer.yml -b -K --extra-vars "USER=$USER"  -i ./inventories
+
+#ansible-playbook playbook.yml --extra-vars "USER=$USER" -i ./inventories --tags="app"
+#ansible-playbook playbook.yml --extra-vars "USER=$USER" -i ./inventories --tags="web"
 
 echo -e "\nGood !!!"
