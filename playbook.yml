@@ -1,6 +1,4 @@
 ---
-#- import_playbook: set_sudoer.yml
-
 - hosts: all
   remote_user: "{{ USER }}"
   become: yes
@@ -25,5 +23,5 @@
   become_method: sudo
   roles:
   - { role: tomcat, tags: [ 'app' ] }
-#  - { role: jenkins, tags: [ 'app' ] }
+  - { role: jenkins, tags: [ 'app' ] }
   tags: ['app']
